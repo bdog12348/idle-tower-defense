@@ -8,9 +8,14 @@ export (float) var health
 export (float) var speed
 export (float) var goldValue
 export (float) var damage
+export (Color) var colorTint
+
+onready var bar = $TextureProgress
 
 func _ready():
-	pass
+	bar.max_value = health
+	bar.value = health
+	modulate = colorTint
 
 func _process(delta):
 	pass
@@ -19,12 +24,13 @@ func _physics_process(delta):
 	movement_loop(delta);
 	
 func movement_loop(delta):
-	var prepos = path_follow.get_global_position()
 	path_follow.set_offset(path_follow.get_offset() + speed * delta)
 	var pos = path_follow.get_global_position()
 
 func reached_end():
 	print("you took " + str(damage) + " damage")
+	
+	get_parent().queue_free()
 	
 	for child in get_children():
 		child.queue_free()
@@ -33,12 +39,15 @@ func reached_end():
 
 func take_damage(amount):
 	health -= amount
+	bar.value = health
 
 func destroy():
 	Data.gold += goldValue
 	
 	print("got " + str(goldValue) + " gold")
 	print("now have " + str(Data.gold) + " total gold")
+	
+	get_parent().queue_free()
 	
 	for child in get_children():
 		child.queue_free()

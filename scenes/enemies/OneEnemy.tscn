@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/Enemy.tscn" type="PackedScene" id=1]
+
+[node name="PathFollow2D" type="PathFollow2D" groups=[
+"BasicEnemies",
+]]
+position = Vector2( 84.4337, 60.6495 )
+rotate = false
+loop = false
+
+[node name="OneEnemy" parent="." instance=ExtResource( 1 )]
+position = Vector2( -5.64874, 5.64874 )
+scale = Vector2( 0.75, 0.75 )
+speed = 150.0
+colorTint = Color( 1, 1, 1, 1 )

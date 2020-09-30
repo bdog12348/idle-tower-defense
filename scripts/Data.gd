@@ -6,26 +6,33 @@ const save_pass = "135792468ab"
 var player_save_path = SAVE_DIR + "player_save.dat"
 var enemy_save_path = SAVE_DIR + "enemy_save.dat"
 
-var gold := float(10)
+var gold := float(0)
 var click_damage := float(1)
 var wave := float(1)
 
-var auto_clickers:= float(0)
-
 var basic_enemies_killed := float(0)
 
-enum EnemyTypes {BASIC_ENEMY}
-enum UpgradeTypes {AUTO_CLICKER}
+enum EnemyTypes {ONE_ENEMY, FIVE_ENEMY, TEN_ENEMY, TWENTY_ENEMY}
+enum UpgradeTypes {AUTO_CLICKER, CLICK_POWER}
 
-const BaseUpgradePrices = {
-	"auto_clicker" : float(10)
+signal bought_upgrade (type)
+
+var Upgrades = {
+	"auto_clicker": {
+		"base_price" : float(10),
+		"multiplier" : float(1.07),
+		"price" : float(0),
+		"current_amount" : float(0),
+		"type" : UpgradeTypes.AUTO_CLICKER
+	},
+	"click_power": {
+		"base_price" : float(50),
+		"multiplier" : float(1.15),
+		"price" : float(0),
+		"current_amount" : float(0),
+		"type" : UpgradeTypes.CLICK_POWER
+	}
 }
-
-const UpgradeMultipliers = {
-	"auto_clicker" : float(1.07)
-}
-
-var UpgradePrices = {}
 
 const EnemyMultipliers = {
 	"basic_enemy" : float(1.07),
@@ -34,10 +41,6 @@ const EnemyMultipliers = {
 
 func _ready():
 	load_data()
-
-
-func _process(delta):
-	pass
 
 
 func addEnemiesKilled(enemyType, amount):
@@ -81,21 +84,27 @@ func load_data():
 func buy_upgrade(type):
 	match(type):
 		UpgradeTypes.AUTO_CLICKER:
-			auto_clickers += float(1)
+			Upgrades.auto_clicker.current_amount += float(1)
 			update_upgrade_prices()
+			emit_signal("bought_upgrade", UpgradeTypes.AUTO_CLICKER)
+		UpgradeTypes.CLICK_POWER:
+			Upgrades.click_power.current_amount += float(1)
+			update_upgrade_prices()
+			emit_signal("bought_upgrade", UpgradeTypes.CLICK_POWER)
 
 
 func update_upgrade_prices():
-	UpgradePrices = {
-		"auto_clicker" : BaseUpgradePrices.auto_clicker * pow(UpgradeMultipliers.auto_clicker, auto_clickers)
-	}
+	for key in Upgrades.keys():
+		var upgrade = Upgrades[key]
+		upgrade["price"] = upgrade["base_price"] * pow(upgrade["multiplier"], upgrade["current_amount"])
 
 
 func save_player_data():
 	var player_data = {
 		"gold" : gold,
 		"click_damage" : click_damage,
-		"auto_clickers" : auto_clickers,
+		"upgrades" : Upgrades,
+		"wave" : wave,
 	}
 
 	var file = File.new()
@@ -120,8 +129,9 @@ func save_enemy_data():
 func load_player_data(data):
 	gold = data.gold
 	click_damage = data.click_damage
-	auto_clickers = data.auto_clickers
-	
+	Upgrades = data.upgrades
+	wave = data.wave
+
 
 func load_enemy_data(data):
 	basic_enemies_killed = data.basic_enemies_killed

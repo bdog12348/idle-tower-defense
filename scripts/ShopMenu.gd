@@ -1,28 +1,45 @@
 extends Control
 
-onready var auto_clicker_price = $MarginContainer/GridContainer/AutoClickerUpgrade/Price
-onready var auto_clicker_level = $MarginContainer/GridContainer/AutoClickerUpgrade/Level
+onready var auto_clicker = $MarginContainer/TabContainer/Clicks/AutoClickerUpgrade
+onready var click_power = $MarginContainer/TabContainer/Clicks/ClickPowerUpgrade
 
-const PRICE = "Price: "
-const LEVEL = "Level: "
+onready var tab_container = $MarginContainer/TabContainer
+
+signal upgrade_bought (key, button)
 
 func _ready():
-	auto_clicker_price.text = PRICE + str(Data.UpgradePrices.auto_clicker)
-	auto_clicker_level.text = LEVEL + str(Data.auto_clickers)
-	$MarginContainer/GridContainer/AutoClickerUpgrade.connect("pressed", self, "_on_AutoClickerUprade_pressed")
+	var buttons = []
+	for frame in tab_container.get_children():
+		for child in frame.get_children():
+			child.update_level(Data.Upgrades[child.keyInDict].current_amount)
+			child.update_price(Data.Upgrades[child.keyInDict].price)
+			child.connect("upgrade_bought", self, "button_pressed")
 
 
 func _process(delta):
 	if Input.is_action_just_pressed("ui_cancel"):
-		for child in get_children():
-			child.queue_free()
-		queue_free()
-		get_tree().paused = false
+		destroy()
 
 
-func _on_AutoClickerUprade_pressed():
-	if Data.gold >= Data.UpgradePrices.auto_clicker:
-		Data.gold -= Data.UpgradePrices.auto_clicker
-		Data.buy_upgrade(Data.UpgradeTypes.AUTO_CLICKER)
-		auto_clicker_price.text = PRICE + str(Data.UpgradePrices.auto_clicker)
-		auto_clicker_level.text = LEVEL + str(Data.auto_clickers)
+func _unhandled_input(event):
+	if not event is InputEventMouseButton:
+		return
+	if event.button_index != BUTTON_LEFT or not event.pressed:
+		return
+		
+	destroy()
+
+
+func destroy():
+	for child in get_children():
+		child.queue_free()
+	queue_free()
+	get_tree().paused = false
+
+
+func button_pressed(key, button):
+	if Data.gold >= Data.Upgrades[key].price:
+		Data.gold -= Data.Upgrades[key].price
+		Data.buy_upgrade(Data.Upgrades[key].type)
+		button.update_level(Data.Upgrades[key].current_amount)
+		button.update_price(Data.Upgrades[key].price)

@@ -1,29 +1,132 @@
 extends Node2D
 
-export (Array, PackedScene) var enemiesToSpawn
+onready var path = $"../Map/TileMap/Path2D"
 
-onready var path = $"../Map/Path2D"
+export (PackedScene) var particleToSpawn
 
 var enemies = []
+var enemiesSpawned = 0
+var totalNumEnemiesToSpawn
+var enemies_to_spawn
 
-func _unhandled_input(event):
-	if not event is InputEventMouseButton:
-		return
-	if event.button_index != BUTTON_LEFT or not event.pressed:
-		return
-	
-	#Attack and potentially kill the first enemy in the enemies list 
+var currentWaveNum
+
+var spawned = false
+
+var spawnedParticle
+
+const ENEMY_DIVISORS = [1, 5, 10, 20]
+
+export (Array, PackedScene) var enemy_array
+
+func _ready():
+	$WaveTimer.start()
+
+func _process(delta):
+	if enemies.size() == 0 and enemiesSpawned == totalNumEnemiesToSpawn and $WaveTimer.is_stopped() == true and currentWaveNum == 0:
+		Data.wave += float(1)
+		$WaveTimer.start()
+
+	if Input.is_action_just_pressed("click"):
+		var mouse_pos = get_viewport().get_mouse_position()
+		
+		if spawnedParticle == null:
+			var spawnedParticle = particleToSpawn.instance()
+			get_tree().root.add_child(spawnedParticle)
+			spawnedParticle.emitting = true
+			spawnedParticle.position = mouse_pos
+		else:
+			spawnedParticle._on_Timer_timeout()
+			var spawnedParticle = particleToSpawn.instance()
+			get_tree().root.add_child(spawnedParticle)
+			spawnedParticle.emitting = true
+			spawnedParticle.position = mouse_pos
+
+		attack_enemy(mouse_pos)
+
+
+func attack_enemy(mouse_pos):
 	if enemies.size() > 0:
-		var enemy = enemies.pop_front()
+		var closest_path = enemies[0].get_parent()
+		for i in path.get_children():
+			var enemy_distance = i.position.distance_to(mouse_pos)
+			if enemy_distance < closest_path.position.distance_to(mouse_pos):
+				closest_path = i
+		var closest_enemy = closest_path.get_children()[0]
+		
+		var enemy_pos = enemies.find(closest_enemy)
+		var enemy = enemies[enemy_pos]
 		enemy.take_damage(Data.click_damage)
 		if enemy.health <= 0:
-			print("killed enemy")
 			enemy.destroy()
+			enemies.remove(enemy_pos)
+
+
+func make_into_wave(num_of_enemies):
+	enemiesSpawned = float(0)
+	currentWaveNum = num_of_enemies
+	
+	for i in range(ENEMY_DIVISORS.size()):
+		var num_divisors_to_spawn = int(num_of_enemies / ENEMY_DIVISORS[ENEMY_DIVISORS.size() - 1 - i])
+		num_of_enemies = fmod(num_of_enemies , ENEMY_DIVISORS[ENEMY_DIVISORS.size() - 1 - i])
+		
+		enemies_to_spawn[enemy_array[enemy_array.size() - 1 - i]] =  num_divisors_to_spawn
+	
+	totalNumEnemiesToSpawn = 0
+	for i in enemies_to_spawn.values():
+		totalNumEnemiesToSpawn += i
+
+
+func get_enemy(target_num):
+	var current_num = 0
+	for i in enemies_to_spawn.keys():
+		current_num += enemies_to_spawn[i]
+		
+		if current_num >= target_num:
+			var returnEnemy = i.instance()
+			return returnEnemy
+
+
+func _on_WaveTimer_timeout():
+	enemies_to_spawn = {}
+	make_into_wave(Data.wave)
+	
+	if enemiesSpawned < totalNumEnemiesToSpawn:
+		$EnemySpawnTimer.start()
+	$WaveTimer.stop()
+
+
+func spawn_enemy():
+	var spawned = get_enemy(enemiesSpawned + 1)
+	var spawnedEnemy = spawned.get_children()[0]
+	path.add_child(spawned)
+	enemies.append(spawnedEnemy)
+	enemiesSpawned += 1
+	
+	if enemiesSpawned >= totalNumEnemiesToSpawn:
+		$EnemySpawnTimer.stop()
+		var nextWaveNum = currentWaveNum - totalNumEnemiesToSpawn
+		if nextWaveNum > 0:
+			make_into_wave(nextWaveNum)
+			if enemiesSpawned < totalNumEnemiesToSpawn:
+				$EnemySpawnTimer.start()
 		else:
-			enemies.push_front(enemy)
+			currentWaveNum = 0
 
 
-func _on_BasicEnemyTimer_timeout():
-	var spawn = enemiesToSpawn[0].instance()
-	enemies.push_back(spawn.get_child(0))
-	path.add_child(spawn)
+func _on_Area2D_body_entered(body):
+	var enemy = body.get_parent()
+	enemies.erase(enemy)
+	enemy.reached_end()
+
+
+func make_enemy(type, offset = null, amount = 1):
+	for i in range(amount):
+		var spawn = enemy_array[type].instance()
+		var spawnEnemy = spawn.get_children()[0]
+		if offset != null:
+			print(offset)
+			spawn.offset = offset - i * 75
+			
+		enemies.append(spawnEnemy)
+		path.add_child(spawn)

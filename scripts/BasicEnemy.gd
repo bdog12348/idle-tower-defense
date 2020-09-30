@@ -5,4 +5,3 @@ func _process(delta):
 
 func destroy():
 	.destroy()
-	Data.addEnemiesKilled(Data.EnemyTypes.BASIC_ENEMY, 1)
