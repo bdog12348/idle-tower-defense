@@ -1,16 +1,17 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
-[ext_resource path="res://scenes/ClickParticle.tscn" type="PackedScene" id=1]
-[ext_resource path="res://scripts/EnemyManager.gd" type="Script" id=2]
+[ext_resource path="res://scenes/ui/ClickParticle.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scripts/enemies/EnemyManager.gd" type="Script" id=2]
 [ext_resource path="res://scenes/enemies/OneEnemy.tscn" type="PackedScene" id=3]
-[ext_resource path="res://scenes/PauseMenu.tscn" type="PackedScene" id=4]
+[ext_resource path="res://textures/ui/bar.png" type="Texture" id=4]
 [ext_resource path="res://tilesets/tower.tres" type="TileSet" id=5]
 [ext_resource path="res://scenes/UpgradeRunner.tscn" type="PackedScene" id=6]
-[ext_resource path="res://scenes/GUI.tscn" type="PackedScene" id=7]
+[ext_resource path="res://scenes/ui/GUI.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scenes/enemies/TenEnemy.tscn" type="PackedScene" id=8]
 [ext_resource path="res://scenes/enemies/FiveEnemy.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/enemies/TwentyEnemy.tscn" type="PackedScene" id=10]
-[ext_resource path="res://scenes/Highlight.tscn" type="PackedScene" id=11]
+[ext_resource path="res://scenes/ui/ShopMenu.tscn" type="PackedScene" id=11]
+[ext_resource path="res://scripts/turrets/TowerManager.gd" type="Script" id=13]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 30.1752, 64 )
@@ -23,11 +24,15 @@ _data = {
 [node name="Node2D" type="Node2D"]
 
 [node name="Map" type="Node2D" parent="."]
+position = Vector2( -47.8967, -80.6241 )
+scale = Vector2( 1.08852, 1.08852 )
 __meta__ = {
 "_edit_group_": true
 }
 
 [node name="TileMap" type="TileMap" parent="Map"]
+position = Vector2( 190.963, 138.27 )
+scale = Vector2( 0.708, 0.708 )
 z_index = -1
 tile_set = ExtResource( 5 )
 cell_y_sort = true
@@ -51,14 +56,29 @@ curve = SubResource( 2 )
 [node name="UpgradeRunner" parent="." instance=ExtResource( 6 )]
 position = Vector2( -1, 0 )
 
+[node name="ShopMenu" parent="." instance=ExtResource( 11 )]
+visible = false
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 48.9492
+margin_top = 13.1134
+margin_right = 597.892
+margin_bottom = 52.1134
+rect_scale = Vector2( 0.939753, 0.939753 )
+
 [node name="GUI" parent="." instance=ExtResource( 7 )]
 pause_mode = 2
-margin_right = 40.0
-margin_bottom = 44.0
-pauseMenu = ExtResource( 4 )
-highlight = ExtResource( 11 )
+margin_right = 1080.0
+margin_bottom = 79.0
 invalidColor = Color( 0.8, 0.0745098, 0.0745098, 1 )
 validColor = Color( 0.223529, 0.662745, 0.0823529, 1 )
+
+[node name="TextureButton" parent="GUI/ShopContainer/ShopButton" index="0"]
+margin_left = -11.8375
+margin_top = -13.1173
+margin_right = 52.1625
+margin_bottom = 50.8827
+rect_scale = Vector2( 1.18033, 1.18033 )
 
 [node name="EnemyManager" type="Node2D" parent="."]
 script = ExtResource( 2 )
@@ -70,7 +90,19 @@ pause_mode = 1
 wait_time = 1.5
 
 [node name="EnemySpawnTimer" type="Timer" parent="EnemyManager"]
-[connection signal="body_entered" from="Map/TileMap/Area2D" to="Map" method="_on_Area2D_body_entered"]
+
+[node name="TowerManager" type="Node2D" parent="."]
+script = ExtResource( 13 )
+
+[node name="bar" type="Sprite" parent="."]
+modulate = Color( 0.156863, 0.294118, 0.388235, 1 )
+position = Vector2( 282.323, 558.201 )
+scale = Vector2( -80.5295, -80.5295 )
+z_index = -2
+texture = ExtResource( 4 )
 [connection signal="body_entered" from="Map/TileMap/Area2D" to="EnemyManager" method="_on_Area2D_body_entered"]
+[connection signal="body_entered" from="Map/TileMap/Area2D" to="Map" method="_on_Area2D_body_entered"]
 [connection signal="timeout" from="EnemyManager/WaveTimer" to="EnemyManager" method="_on_WaveTimer_timeout"]
 [connection signal="timeout" from="EnemyManager/EnemySpawnTimer" to="EnemyManager" method="spawn_enemy"]
+
+[editable path="GUI"]

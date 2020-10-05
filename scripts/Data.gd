@@ -6,14 +6,14 @@ const save_pass = "135792468ab"
 var player_save_path = SAVE_DIR + "player_save.dat"
 var enemy_save_path = SAVE_DIR + "enemy_save.dat"
 
-var gold := float(0)
+var gold := float(1000)
 var click_damage := float(1)
 var wave := float(1)
 
 var basic_enemies_killed := float(0)
 
 enum EnemyTypes {ONE_ENEMY, FIVE_ENEMY, TEN_ENEMY, TWENTY_ENEMY}
-enum UpgradeTypes {AUTO_CLICKER, CLICK_POWER}
+enum UpgradeTypes {AUTO_CLICKER, CLICK_POWER, DIGGING}
 
 signal bought_upgrade (type)
 
@@ -31,6 +31,13 @@ var Upgrades = {
 		"price" : float(0),
 		"current_amount" : float(0),
 		"type" : UpgradeTypes.CLICK_POWER
+	},
+	"digging_permit": {
+		"base_price" : float(250),
+		"multiplier" : float(1.15),
+		"price" : float(0),
+		"current_amount" : float(0),
+		"type" : UpgradeTypes.DIGGING
 	}
 }
 
@@ -91,6 +98,9 @@ func buy_upgrade(type):
 			Upgrades.click_power.current_amount += float(1)
 			update_upgrade_prices()
 			emit_signal("bought_upgrade", UpgradeTypes.CLICK_POWER)
+		UpgradeTypes.DIGGING:
+			Upgrades.digging_permit.current_amount += 1
+			update_upgrade_prices()
 
 
 func update_upgrade_prices():

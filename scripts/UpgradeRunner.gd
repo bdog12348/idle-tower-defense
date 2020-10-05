@@ -2,8 +2,6 @@ extends Node2D
 
 onready var area2d = $"../Map/TileMap/Area2D"
 
-signal bought_upgrade (type)
-
 var auto_clicker_base_time = 2
 
 func _ready():

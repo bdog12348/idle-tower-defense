@@ -27,8 +27,14 @@ func _on_Upgrade_pressed():
 
 func update_level(level):
 	current_level = level
-	$Level.text = "Level: " + str(level)
+	if current_level == maxLevel:
+			$Level.text = "Level: MAX"
+	else:
+		$Level.text = "Level: " + str(level)
 
 
 func update_price(price):
-	$Price.text = "Price: " + str(stepify(price, 0.01))
+	if current_level == maxLevel:
+		$Price.text = "Price: --"
+	else:
+		$Price.text = "Price: " + str(stepify(price, 0.01))

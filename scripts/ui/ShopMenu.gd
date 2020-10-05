@@ -5,10 +5,8 @@ onready var click_power = $MarginContainer/TabContainer/Clicks/ClickPowerUpgrade
 
 onready var tab_container = $MarginContainer/TabContainer
 
-signal upgrade_bought (key, button)
 
 func _ready():
-	var buttons = []
 	for frame in tab_container.get_children():
 		for child in frame.get_children():
 			child.update_level(Data.Upgrades[child.keyInDict].current_amount)
@@ -16,9 +14,9 @@ func _ready():
 			child.connect("upgrade_bought", self, "button_pressed")
 
 
-func _process(delta):
+func _process(_delta):
 	if Input.is_action_just_pressed("ui_cancel"):
-		destroy()
+		visible = false
 
 
 func _unhandled_input(event):
@@ -27,14 +25,7 @@ func _unhandled_input(event):
 	if event.button_index != BUTTON_LEFT or not event.pressed:
 		return
 		
-	destroy()
-
-
-func destroy():
-	for child in get_children():
-		child.queue_free()
-	queue_free()
-	get_tree().paused = false
+	visible = false
 
 
 func button_pressed(key, button):

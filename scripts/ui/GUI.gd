@@ -1,11 +1,11 @@
 extends MarginContainer
 
-export (PackedScene) var ShopMenu
-export (PackedScene) var pauseMenu
-export (PackedScene) var highlight
+var pauseMenu = preload("res://scenes/ui/PauseMenu.tscn")
+var highlight = preload("res://scenes/ui/Highlight.tscn")
 
-onready var goldLabel = $"VBoxContainer/TopBar/VBoxContainer/Gold Label"
-onready var waveLabel = $"VBoxContainer/TopBar/VBoxContainer/Wave Label"
+onready var ShopMenu = get_node("../ShopMenu")
+onready var goldLabel = $"StatsContainer/Gold Label"
+onready var waveLabel = $"StatsContainer/Wave Label"
 
 export (Color) var invalidColor
 export (Color) var validColor
@@ -18,7 +18,7 @@ var highlightSpawn
 onready var tilemap = $"../Map/TileMap"
 
 
-func _process(delta):
+func _process(_delta):
 	if (Data.gold > 1000):
 		goldLabel.text = "Gold: " + scientific_notation(Data.gold)
 	else:
@@ -37,7 +37,7 @@ func _process(delta):
 	if Input.is_action_just_pressed("save") and shop == null:
 		if highlightSpawn == null:
 			highlightSpawn = highlight.instance()
-			get_parent().add_child(highlightSpawn)
+			tilemap.add_child(highlightSpawn)
 		else:
 			highlightSpawn.queue_free()
 	
@@ -45,25 +45,22 @@ func _process(delta):
 
 
 func _on_TextureButton_pressed():
-	if shop == null:
-		if highlightSpawn != null:
-			highlightSpawn.queue_free()
-		shop = ShopMenu.instance()
-		get_parent().add_child(shop)
-		#get_tree().paused = true
+	ShopMenu.visible = !ShopMenu.visible
 
 
 func move_highlight():
-	var mouse_pos = get_viewport().get_mouse_position()
+	var mouse_pos = tilemap.to_local(get_viewport().get_mouse_position())
 	var tile_pos = tilemap.map_to_world(tilemap.world_to_map(mouse_pos))
 	
 	if highlightSpawn != null:
-		highlightSpawn.position = Vector2(tile_pos.x + 32, tile_pos.y + 32)
+		var offset_amt = 32 * tilemap.scale.x
 		var tile_type = tilemap.get_cellv(tilemap.world_to_map(mouse_pos))
-		if tile_type == 0:
-			highlightSpawn.modulate = invalidColor
-		elif tile_type == 1:
-			highlightSpawn.modulate = validColor
+		if tile_type != -1:
+			highlightSpawn.position = Vector2(tile_pos.x + offset_amt, tile_pos.y + offset_amt)
+			if tile_type == 0:
+				highlightSpawn.modulate = invalidColor
+			elif tile_type == 1:
+				highlightSpawn.modulate = validColor
 
 
 func scientific_notation(number : float) -> String:

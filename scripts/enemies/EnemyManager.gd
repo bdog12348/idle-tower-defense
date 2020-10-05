@@ -11,18 +11,19 @@ var enemies_to_spawn
 
 var currentWaveNum
 
-var spawned = false
-
 var spawnedParticle
 
 const ENEMY_DIVISORS = [1, 5, 10, 20]
 
 export (Array, PackedScene) var enemy_array
 
+signal enemy_created(enemy)
+signal enemy_removed(enemy)
+
 func _ready():
 	$WaveTimer.start()
 
-func _process(delta):
+func _process(_delta):
 	if enemies.size() == 0 and enemiesSpawned == totalNumEnemiesToSpawn and $WaveTimer.is_stopped() == true and currentWaveNum == 0:
 		Data.wave += float(1)
 		$WaveTimer.start()
@@ -57,9 +58,6 @@ func attack_enemy(mouse_pos):
 		var enemy_pos = enemies.find(closest_enemy)
 		var enemy = enemies[enemy_pos]
 		enemy.take_damage(Data.click_damage)
-		if enemy.health <= 0:
-			enemy.destroy()
-			enemies.remove(enemy_pos)
 
 
 func make_into_wave(num_of_enemies):
@@ -99,8 +97,10 @@ func _on_WaveTimer_timeout():
 func spawn_enemy():
 	var spawned = get_enemy(enemiesSpawned + 1)
 	var spawnedEnemy = spawned.get_children()[0]
+	spawnedEnemy.connect("died", self, "enemy_died")
 	path.add_child(spawned)
 	enemies.append(spawnedEnemy)
+	emit_signal("enemy_created", spawned)
 	enemiesSpawned += 1
 	
 	if enemiesSpawned >= totalNumEnemiesToSpawn:
@@ -117,6 +117,7 @@ func spawn_enemy():
 func _on_Area2D_body_entered(body):
 	var enemy = body.get_parent()
 	enemies.erase(enemy)
+	emit_signal("enemy_removed", enemy.get_parent())
 	enemy.reached_end()
 
 
@@ -124,9 +125,17 @@ func make_enemy(type, offset = null, amount = 1):
 	for i in range(amount):
 		var spawn = enemy_array[type].instance()
 		var spawnEnemy = spawn.get_children()[0]
+		spawnEnemy.connect("died", self, "enemy_died")
 		if offset != null:
-			print(offset)
 			spawn.offset = offset - i * 75
 			
+		emit_signal("enemy_created", spawn)
 		enemies.append(spawnEnemy)
 		path.add_child(spawn)
+
+
+func enemy_died(enemy):
+	var enemy_pos = enemies.find(enemy)
+	emit_signal("enemy_removed", enemy.get_parent())
+	enemy.destroy()
+	enemies.remove(enemy_pos)
