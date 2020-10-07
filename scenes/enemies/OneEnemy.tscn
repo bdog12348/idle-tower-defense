@@ -12,5 +12,6 @@ loop = false
 [node name="OneEnemy" parent="." instance=ExtResource( 1 )]
 position = Vector2( -5.64874, 5.05414 )
 scale = Vector2( 0.75, 0.75 )
+health = 2.0
 speed = 150.0
 colorTint = Color( 1, 1, 1, 1 )

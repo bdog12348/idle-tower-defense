@@ -2,7 +2,6 @@
 
 [ext_resource path="res://textures/ui/highlight.png" type="Texture" id=1]
 
-
 [node name="Highlight" type="Sprite"]
 z_index = 1
 texture = ExtResource( 1 )

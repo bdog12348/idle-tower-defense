@@ -4,6 +4,7 @@ class_name Turret
 
 var target
 var active = false
+var moving = false
 
 var all_enemies = []
 
@@ -35,17 +36,22 @@ func _process(_delta):
 		if Input.is_action_just_pressed("click") and canShoot:
 			fire_bullet()
 		turret_gun.look_at(get_global_mouse_position())
+	
+	if moving:
+		$Highlight.visible = true
+	else:
+		$Highlight.visible = false
 
 
 func fire_bullet():
 	var dir_rot = -turret_gun.rotation + PI/2
 	var direction = Vector2(sin(dir_rot), cos(dir_rot))
-	var spawn_point = position + direction * bullet_fire_offset
+	var spawn_point = global_position + direction * bullet_fire_offset
 
 	var bullet = Bullet.instance()
-	get_tree().root.add_child(bullet)
 	bullet.velocity = bullet.velocity.rotated(turret_gun.rotation)
 	bullet.position = spawn_point
+	get_tree().root.add_child(bullet)
 	
 	canShoot = false
 	$Tween.interpolate_property($ShotProgress, "value", 0, 1, shot_cooldown)
@@ -85,7 +91,7 @@ func set_turret_inactive():
 
 
 func input_handler(viewport, event, shape_idx):
-	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
+	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT and not moving:
 		set_turret_active()
 
 

@@ -6,16 +6,24 @@ const save_pass = "135792468ab"
 var player_save_path = SAVE_DIR + "player_save.dat"
 var enemy_save_path = SAVE_DIR + "enemy_save.dat"
 
-var gold := float(1000)
+var gold := float(0)
 var click_damage := float(1)
 var wave := float(1)
+var num_towers := float(0)
 
 var basic_enemies_killed := float(0)
 
 enum EnemyTypes {ONE_ENEMY, FIVE_ENEMY, TEN_ENEMY, TWENTY_ENEMY}
 enum UpgradeTypes {AUTO_CLICKER, CLICK_POWER, DIGGING}
+enum TurretTypes {BASIC_TURRET}
 
 signal bought_upgrade (type)
+
+var Turrets = {
+	"basic_turret": {
+		"type": TurretTypes.BASIC_TURRET
+	}
+}
 
 var Upgrades = {
 	"auto_clicker": {

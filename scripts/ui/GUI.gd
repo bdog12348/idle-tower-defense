@@ -2,10 +2,12 @@ extends MarginContainer
 
 var pauseMenu = preload("res://scenes/ui/PauseMenu.tscn")
 var highlight = preload("res://scenes/ui/Highlight.tscn")
+var towerMenu = preload("res://scenes/TowerMenu.tscn")
 
 onready var ShopMenu = get_node("../ShopMenu")
 onready var goldLabel = $"StatsContainer/Gold Label"
 onready var waveLabel = $"StatsContainer/Wave Label"
+onready var statsPanel = $"StatsContainer/StatsPanelContainer/StatsPanel"
 
 export (Color) var invalidColor
 export (Color) var validColor
@@ -13,9 +15,16 @@ export (Color) var validColor
 var shop
 var pause
 
+var panelShowing = false
+
 var highlightSpawn
+var towerMenuSpawn
 
 onready var tilemap = $"../Map/TileMap"
+
+const offset_amt = 32
+
+signal start_dig (tower_pos)
 
 
 func _process(_delta):
@@ -26,13 +35,19 @@ func _process(_delta):
 	waveLabel.text = "Wave: " + str(Data.wave)
 	
 	if Input.is_action_just_pressed("ui_cancel"):
-		if highlightSpawn != null:
-			highlightSpawn.queue_free()
-		else:
-			if pause == null and shop == null:
-				pause = pauseMenu.instance()
-				get_tree().root.add_child(pause)
-				get_tree().paused = true
+		if ShopMenu.visible:
+			ShopMenu.invis()
+		elif pause == null:
+			pause = pauseMenu.instance()
+			get_tree().root.add_child(pause)
+			get_tree().paused = true
+#		if highlightSpawn != null:
+#			highlightSpawn.queue_free()
+#		else:
+#			if pause == null and not ShopMenu.visible:
+#				pause = pauseMenu.instance()
+#				get_tree().root.add_child(pause)
+#				get_tree().paused = true
 	
 	if Input.is_action_just_pressed("save") and shop == null:
 		if highlightSpawn == null:
@@ -46,6 +61,7 @@ func _process(_delta):
 
 func _on_TextureButton_pressed():
 	ShopMenu.visible = !ShopMenu.visible
+	get_tree().paused = !get_tree().paused
 
 
 func move_highlight():
@@ -53,7 +69,6 @@ func move_highlight():
 	var tile_pos = tilemap.map_to_world(tilemap.world_to_map(mouse_pos))
 	
 	if highlightSpawn != null:
-		var offset_amt = 32 * tilemap.scale.x
 		var tile_type = tilemap.get_cellv(tilemap.world_to_map(mouse_pos))
 		if tile_type != -1:
 			highlightSpawn.position = Vector2(tile_pos.x + offset_amt, tile_pos.y + offset_amt)
@@ -61,6 +76,16 @@ func move_highlight():
 				highlightSpawn.modulate = invalidColor
 			elif tile_type == 1:
 				highlightSpawn.modulate = validColor
+				if Input.is_action_just_pressed("click"):
+					if towerMenuSpawn == null:
+						towerMenuSpawn = towerMenu.instance()
+						var towerMenuLoc = Vector2(tile_pos.x, tile_pos.y)
+						print("placing at ", towerMenuLoc)
+						towerMenuSpawn.position = towerMenuLoc
+						tilemap.add_child(towerMenuSpawn)
+						highlightSpawn.queue_free()
+					#highlightSpawn.clicked()
+#					emit_signal("start_dig", tilemap.world_to_map(mouse_pos))
 
 
 func scientific_notation(number : float) -> String:
@@ -76,3 +101,15 @@ func scientific_notation(number : float) -> String:
 		return String (stepify(coeff, 0.01)) + "e" + String(exp_)
 	else:
 		return String(number) + "e0"
+
+
+func _on_Button_pressed():
+	print(panelShowing)
+	if not panelShowing:
+		$Tween.interpolate_property(statsPanel, "rect_position:y", -425, 50, .5, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
+		$Tween.start()
+		panelShowing = true
+	else:
+		$Tween.interpolate_property(statsPanel, "rect_position:y", 50, -425, .5, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
+		$Tween.start()
+		panelShowing = false

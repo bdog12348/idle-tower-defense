@@ -2,7 +2,6 @@
 
 [ext_resource path="res://scenes/enemies/Enemy.tscn" type="PackedScene" id=1]
 
-
 [node name="PathFollow2D" type="PathFollow2D" groups=[
 "BasicEnemies",
 ]]
@@ -11,7 +10,6 @@ loop = false
 
 [node name="FiveEnemy" parent="." instance=ExtResource( 1 )]
 scale = Vector2( 0.75, 0.75 )
-health = 5.0
 speed = 300.0
 goldValue = 5.0
 damage = 5.0

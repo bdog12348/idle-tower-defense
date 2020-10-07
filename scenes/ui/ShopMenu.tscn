@@ -1,15 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scripts/ui/ShopMenu.gd" type="Script" id=1]
 [ext_resource path="res://textures/buttons/auto_clicker_image.png" type="Texture" id=2]
-[ext_resource path="res://scenes/Upgrade.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/ui/Upgrade.tscn" type="PackedScene" id=3]
 [ext_resource path="res://themes/shop_theme.tres" type="Theme" id=4]
-
-[sub_resource type="Gradient" id=1]
-colors = PoolColorArray( 0.156863, 0.294118, 0.388235, 0.866667, 0.156863, 0.294118, 0.388235, 0.866667 )
-
-[sub_resource type="GradientTexture" id=2]
-gradient = SubResource( 1 )
 
 [node name="ShopMenu" type="Control"]
 pause_mode = 2
@@ -18,18 +12,6 @@ anchor_bottom = 1.0
 mouse_filter = 2
 theme = ExtResource( 4 )
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="TextureRect" type="TextureRect" parent="."]
-visible = false
-margin_right = 1978.0
-margin_bottom = 511.473
-rect_scale = Vector2( 0.651116, 1.42557 )
-mouse_filter = 2
-texture = SubResource( 2 )
-expand = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -58,21 +40,19 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 tab_align = 0
 
-[node name="Upgrades" type="GridContainer" parent="MarginContainer/TabContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = 31.0
+
+[node name="Upgrades" type="VBoxContainer" parent="MarginContainer/TabContainer/ScrollContainer"]
+margin_right = 1220.0
+margin_bottom = 234.0
 mouse_filter = 2
 size_flags_horizontal = 3
-custom_constants/vseparation = 15
-custom_constants/hseparation = 15
-columns = 10
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="AutoClickerUpgrade" parent="MarginContainer/TabContainer/Upgrades" instance=ExtResource( 3 )]
-margin_bottom = 134.0
+[node name="AutoClickerUpgrade" parent="MarginContainer/TabContainer/ScrollContainer/Upgrades" instance=ExtResource( 3 )]
+margin_right = 1220.0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 buttonImage = ExtResource( 2 )
@@ -81,10 +61,10 @@ keyInDict = "auto_clicker"
 tooltip = "Automatically clicks for you every - seconds each additional level in this upgrades time by 0.1 seconds"
 maxLevel = 37.0
 
-[node name="ClickPowerUpgrade" parent="MarginContainer/TabContainer/Upgrades" instance=ExtResource( 3 )]
-margin_left = 105.0
-margin_right = 195.0
-margin_bottom = 134.0
+[node name="ClickPowerUpgrade" parent="MarginContainer/TabContainer/ScrollContainer/Upgrades" instance=ExtResource( 3 )]
+margin_top = 119.0
+margin_right = 1220.0
+margin_bottom = 234.0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 buttonImage = ExtResource( 2 )
@@ -92,18 +72,6 @@ buttonName = "Click Power"
 keyInDict = "click_power"
 tooltip = "Each level in this increases your click power by 1"
 maxLevel = 40.0
-
-[node name="Shovel" parent="MarginContainer/TabContainer/Upgrades" instance=ExtResource( 3 )]
-margin_left = 210.0
-margin_right = 300.0
-margin_bottom = 134.0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-buttonImage = ExtResource( 2 )
-buttonName = "Digging Permit"
-keyInDict = "digging_permit"
-tooltip = "Allows you to dig ground to place turrets."
-maxLevel = 1.0
 
 [node name="Towers" type="GridContainer" parent="MarginContainer/TabContainer"]
 visible = false
