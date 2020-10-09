@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scripts/ui/ShopMenu.gd" type="Script" id=1]
-[ext_resource path="res://textures/buttons/auto_clicker_image.png" type="Texture" id=2]
+[ext_resource path="res://textures/ui/buttons/auto_clicker_image.png" type="Texture" id=2]
 [ext_resource path="res://scenes/ui/Upgrade.tscn" type="PackedScene" id=3]
 [ext_resource path="res://themes/shop_theme.tres" type="Theme" id=4]
+[ext_resource path="res://scenes/ui/ShopPage.tscn" type="PackedScene" id=5]
 
 [node name="ShopMenu" type="Control"]
 pause_mode = 2
@@ -17,6 +18,7 @@ __meta__ = {
 }
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 rect_min_size = Vector2( 1280, 720 )
@@ -86,3 +88,9 @@ custom_constants/hseparation = 15
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Control" parent="." instance=ExtResource( 5 )]
+margin_left = -0.672852
+margin_top = 4.0
+margin_right = 562.327
+margin_bottom = 406.0

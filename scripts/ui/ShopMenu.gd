@@ -7,12 +7,12 @@ onready var tab_container = $MarginContainer/TabContainer
 
 
 func _ready():
-	for frame in tab_container.get_children():
-		for box in frame.get_children():
-			for child in box.get_children():
-				child.update_level(Data.Upgrades[child.keyInDict].current_amount)
-				child.update_price(Data.Upgrades[child.keyInDict].price)
-				child.connect("upgrade_bought", self, "button_pressed")
+	print(get_children())
+#	for frame in tab_container.get_children():
+	for child in $Control.get_child(0).get_children():
+		child.update_level(Data.Upgrades[child.keyInDict].current_amount)
+		child.update_price(Data.Upgrades[child.keyInDict].price)
+		child.connect("upgrade_bought", self, "button_pressed")
 
 
 func _unhandled_input(event):
@@ -24,11 +24,11 @@ func _unhandled_input(event):
 
 
 func button_pressed(key, button):
-	if Data.gold >= Data.Upgrades[key].price:
-		Data.gold -= Data.Upgrades[key].price
-		Data.buy_upgrade(Data.Upgrades[key].type)
-		button.update_level(Data.Upgrades[key].current_amount)
-		button.update_price(Data.Upgrades[key].price)
+#	if Data.gold >= Data.Upgrades[key].price:
+#		Data.gold -= Data.Upgrades[key].price
+	Data.buy_upgrade(Data.Upgrades[key].type)
+	button.update_level(Data.Upgrades[key].current_amount)
+	button.update_price(Data.Upgrades[key].price)
 
 
 func invis():

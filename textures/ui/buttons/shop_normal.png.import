@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/shop_normal.png-12ddabfe210814bc3948d8030e201e98.stex"
+path="res://.import/shop_normal.png-97966267134e256b4681a222550ccfba.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://textures/buttons/shop_normal.png"
-dest_files=[ "res://.import/shop_normal.png-12ddabfe210814bc3948d8030e201e98.stex" ]
+source_file="res://textures/ui/buttons/shop_normal.png"
+dest_files=[ "res://.import/shop_normal.png-97966267134e256b4681a222550ccfba.stex" ]
 
 [params]
 

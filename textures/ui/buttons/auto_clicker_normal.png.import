@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/auto_clicker_hover.png-542402afb45364f41497d0e2da4dd25c.stex"
+path="res://.import/auto_clicker_normal.png-a21730b2b5ba5a2f0bff47bdd4d22224.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://textures/buttons/auto_clicker_hover.png"
-dest_files=[ "res://.import/auto_clicker_hover.png-542402afb45364f41497d0e2da4dd25c.stex" ]
+source_file="res://textures/ui/buttons/auto_clicker_normal.png"
+dest_files=[ "res://.import/auto_clicker_normal.png-a21730b2b5ba5a2f0bff47bdd4d22224.stex" ]
 
 [params]
 

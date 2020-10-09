@@ -1,0 +1,111 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/ui/Upgrade.tscn" type="PackedScene" id=1]
+[ext_resource path="res://textures/ui/buttons/auto_clicker_normal.png" type="Texture" id=2]
+
+[node name="Panel" type="Panel"]
+margin_left = -2.67273
+margin_right = 1277.33
+margin_bottom = 720.0
+rect_min_size = Vector2( 1280, 720 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CanvasLayer" type="Node2D" parent="."]
+z_index = 1
+
+[node name="Click Power" parent="CanvasLayer" instance=ExtResource( 1 )]
+modulate = Color( 1, 1, 1, 1 )
+margin_left = 575.635
+margin_top = 45.9784
+margin_right = 665.635
+margin_bottom = 160.978
+disabled = false
+buttonImage = ExtResource( 2 )
+buttonName = "Click Power"
+keyInDict = "click_power"
+maxLevel = 10.0
+unlocked = true
+
+[node name="Auto Clicker" parent="CanvasLayer" instance=ExtResource( 1 )]
+margin_left = 677.35
+margin_top = 208.211
+margin_right = 767.35
+margin_bottom = 323.211
+previous_node = NodePath("../Click Power")
+buttonImage = ExtResource( 2 )
+buttonName = "Auto Clicker"
+keyInDict = "auto_clicker"
+maxLevel = 35.0
+
+[node name="Digging Permit" parent="CanvasLayer" instance=ExtResource( 1 )]
+margin_left = 412.494
+margin_top = 209.516
+margin_right = 502.494
+margin_bottom = 324.516
+rect_scale = Vector2( 1, 1.00485 )
+previous_node = NodePath("../Click Power")
+buttonImage = ExtResource( 2 )
+buttonName = "Digging Permit"
+keyInDict = "digging_permit"
+maxLevel = 1.0
+
+[node name="Upgrade4" parent="CanvasLayer" instance=ExtResource( 1 )]
+margin_left = 879.35
+margin_top = 362.211
+margin_right = 969.35
+margin_bottom = 477.211
+previous_node = NodePath("../Auto Clicker")
+buttonImage = ExtResource( 2 )
+buttonName = "Test"
+keyInDict = "auto_clicker"
+maxLevel = 35.0
+
+[node name="Upgrade5" parent="CanvasLayer" instance=ExtResource( 1 )]
+margin_left = 235.494
+margin_top = 352.516
+margin_right = 325.494
+margin_bottom = 467.516
+rect_scale = Vector2( 1, 1.00485 )
+previous_node = NodePath("../Digging Permit")
+buttonImage = ExtResource( 2 )
+buttonName = "Test"
+keyInDict = "digging_permit"
+maxLevel = 1.0
+
+[node name="Upgrade6" parent="CanvasLayer" instance=ExtResource( 1 )]
+margin_left = 390.494
+margin_top = 351.516
+margin_right = 480.494
+margin_bottom = 466.516
+rect_scale = Vector2( 1, 1.00485 )
+previous_node = NodePath("../Digging Permit")
+buttonImage = ExtResource( 2 )
+buttonName = "Test"
+keyInDict = "digging_permit"
+maxLevel = 1.0
+
+[node name="Upgrade7" parent="CanvasLayer" instance=ExtResource( 1 )]
+margin_left = 558.494
+margin_top = 357.516
+margin_right = 648.494
+margin_bottom = 472.516
+rect_scale = Vector2( 1, 1.00485 )
+previous_node = NodePath("../Click Power")
+buttonImage = ExtResource( 2 )
+buttonName = "Test"
+keyInDict = "digging_permit"
+maxLevel = 1.0
+
+[node name="Upgrade8" parent="CanvasLayer" instance=ExtResource( 1 )]
+margin_left = 701.494
+margin_top = 361.516
+margin_right = 791.494
+margin_bottom = 476.516
+rect_scale = Vector2( 1, 1.00485 )
+previous_node = NodePath("../Auto Clicker")
+buttonImage = ExtResource( 2 )
+buttonName = "Test"
+keyInDict = "digging_permit"
+maxLevel = 1.0

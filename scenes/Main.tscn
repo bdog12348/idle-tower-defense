@@ -56,7 +56,6 @@ script = ExtResource( 13 )
 
 [node name="Turret" parent="Map/TileMap/TowerManager" instance=ExtResource( 12 )]
 position = Vector2( 800, 416 )
-scale = Vector2( 1, 1 )
 z_index = 1
 
 [node name="UpgradeRunner" parent="." instance=ExtResource( 6 )]

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/label_continue.png-85bbf71e8686718165d001fe65011eda.stex"
+path="res://.import/quit_pressed.png-a268d4e0eba7e71672381c1f70be6e72.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://textures/buttons/label_continue.png"
-dest_files=[ "res://.import/label_continue.png-85bbf71e8686718165d001fe65011eda.stex" ]
+source_file="res://textures/ui/buttons/quit_pressed.png"
+dest_files=[ "res://.import/quit_pressed.png-a268d4e0eba7e71672381c1f70be6e72.stex" ]
 
 [params]
 

@@ -28,22 +28,22 @@ func _process(_delta):
 		Data.wave += float(1)
 		$WaveTimer.start()
 
-#	if Input.is_action_just_pressed("click"):
-#		var mouse_pos = get_viewport().get_mouse_position()
-#
-#		if spawnedParticle == null:
-#			var spawnedParticle = particleToSpawn.instance()
-#			get_tree().root.add_child(spawnedParticle)
-#			spawnedParticle.emitting = true
-#			spawnedParticle.position = mouse_pos
-#		else:
-#			spawnedParticle._on_Timer_timeout()
-#			var spawnedParticle = particleToSpawn.instance()
-#			get_tree().root.add_child(spawnedParticle)
-#			spawnedParticle.emitting = true
-#			spawnedParticle.position = mouse_pos
-#
-#		attack_enemy(mouse_pos)
+	if Input.is_action_just_pressed("click"):
+		var mouse_pos = get_viewport().get_mouse_position()
+
+		if spawnedParticle == null:
+			var spawnedParticle = particleToSpawn.instance()
+			get_tree().root.add_child(spawnedParticle)
+			spawnedParticle.emitting = true
+			spawnedParticle.position = mouse_pos
+		else:
+			spawnedParticle._on_Timer_timeout()
+			var spawnedParticle = particleToSpawn.instance()
+			get_tree().root.add_child(spawnedParticle)
+			spawnedParticle.emitting = true
+			spawnedParticle.position = mouse_pos
+
+		attack_enemy(mouse_pos)
 
 
 func attack_enemy(mouse_pos):
