@@ -1,0 +1,97 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/ui/UpgradeButton.tscn" type="PackedScene" id=1]
+[ext_resource path="res://textures/turrets/scrap_gun_turret-01.png" type="Texture" id=2]
+
+[node name="Control" type="Control"]
+margin_right = 40.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 1280, 720 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+margin_right = 1280.0
+margin_bottom = 1320.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 0
+
+[node name="Panel" type="Panel" parent="ScrollContainer/VBoxContainer"]
+margin_right = 1280.0
+margin_bottom = 600.0
+rect_min_size = Vector2( 1280, 600 )
+size_flags_horizontal = 3
+
+[node name="TextureRect" type="TextureRect" parent="ScrollContainer/VBoxContainer/Panel"]
+margin_left = 566.024
+margin_top = 304.124
+margin_right = 628.024
+margin_bottom = 344.124
+rect_scale = Vector2( 2.15506, 2.15506 )
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer/Panel"]
+margin_left = 539.267
+margin_top = 197.06
+margin_right = 742.267
+margin_bottom = 249.06
+text = "Scrap Turret"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BasicTurretPanel" type="Panel" parent="ScrollContainer/VBoxContainer"]
+margin_top = 600.0
+margin_right = 1280.0
+margin_bottom = 1320.0
+rect_min_size = Vector2( 1280, 720 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="UpgradeContainer" type="Node2D" parent="ScrollContainer/VBoxContainer/BasicTurretPanel"]
+z_index = 1
+
+[node name="Damage" parent="ScrollContainer/VBoxContainer/BasicTurretPanel/UpgradeContainer" groups=[
+"BasicTurretUpgrades",
+"Upgrade",
+] instance=ExtResource( 1 )]
+modulate = Color( 1, 1, 1, 1 )
+margin_left = 802.673
+margin_right = 892.673
+disabled = false
+buttonName = "Damage"
+keyInDict = "basic_turret_damage"
+tooltip = "Every upgrade in this increases turret damage by .25."
+maxLevel = 40.0
+unlocked = true
+
+[node name="Reload" parent="ScrollContainer/VBoxContainer/BasicTurretPanel/UpgradeContainer" groups=[
+"BasicTurretUpgrades",
+"Upgrade",
+] instance=ExtResource( 1 )]
+modulate = Color( 1, 1, 1, 1 )
+margin_left = 363.673
+margin_top = 2.0
+margin_right = 453.673
+margin_bottom = 117.0
+disabled = false
+buttonName = "Reload Speed"
+keyInDict = "basic_turret_reload"
+tooltip = "Every upgrade in this increases turret reload speed by .05."
+maxLevel = 18.0
+unlocked = true

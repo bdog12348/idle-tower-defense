@@ -1,23 +1,26 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
-[ext_resource path="res://textures/turrets/turret_gun.png" type="Texture" id=1]
-[ext_resource path="res://textures/turrets/turret_base.png" type="Texture" id=2]
+[ext_resource path="res://textures/basic_turret_gun.png" type="Texture" id=1]
+[ext_resource path="res://textures/basic_turret_base.png" type="Texture" id=2]
 [ext_resource path="res://scripts/turrets/BasicTurret.gd" type="Script" id=3]
 [ext_resource path="res://textures/ui/over.png" type="Texture" id=4]
 [ext_resource path="res://textures/ui/under.png" type="Texture" id=5]
 [ext_resource path="res://textures/ui/bar.png" type="Texture" id=6]
 [ext_resource path="res://scenes/ui/Highlight.tscn" type="PackedScene" id=7]
+[ext_resource path="res://textures/worker.png" type="Texture" id=8]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 32.1858, 32.1538 )
+extents = Vector2( 7.10284, 7.14153 )
 
-[node name="Turret" type="Sprite"]
-position = Vector2( 196.733, 100.583 )
+[node name="Turret" type="Sprite" groups=[
+"Tower",
+]]
+z_index = 1
 texture = ExtResource( 2 )
 script = ExtResource( 3 )
+max_shots_per_mag = 2
 
 [node name="turret_gun" type="Sprite" parent="."]
-position = Vector2( -0.42131, -0.222275 )
 texture = ExtResource( 1 )
 
 [node name="ShotTimer" type="Timer" parent="."]
@@ -30,13 +33,13 @@ one_shot = true
 shape = SubResource( 1 )
 
 [node name="ShotProgress" type="TextureProgress" parent="."]
-margin_left = -38.6617
-margin_top = -51.915
-margin_right = 179.338
-margin_bottom = -11.915
-rect_scale = Vector2( 0.362771, 0.362771 )
+margin_left = -17.629
+margin_top = -15.506
+margin_right = 200.371
+margin_bottom = 24.494
+rect_scale = Vector2( 0.159489, 0.159489 )
 max_value = 1.0
-step = 0.01
+step = 1.0
 value = 1.0
 texture_under = ExtResource( 5 )
 texture_over = ExtResource( 4 )
@@ -46,7 +49,31 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Tween" type="Tween" parent="."]
+[node name="ReloadProgress" type="TextureProgress" parent="ShotProgress"]
+visible = false
+margin_top = -7.0
+margin_right = 218.0
+margin_bottom = 29.0
+rect_scale = Vector2( 1, 0.158 )
+max_value = 1.0
+step = 0.01
+value = 1.0
+texture_under = ExtResource( 5 )
+texture_progress = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Highlight" parent="." instance=ExtResource( 7 )]
 visible = false
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="wIndicator" type="Sprite" parent="."]
+visible = false
+position = Vector2( 0.0294952, -12.3453 )
+scale = Vector2( 0.501076, 0.501076 )
+texture = ExtResource( 8 )
+
+[node name="ReloadTimer" type="Timer" parent="."]
+one_shot = true

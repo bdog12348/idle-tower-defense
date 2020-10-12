@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/bullet.png-fcc9b6edffdc3d7ef5fea596f59b4f40.stex"
+path="res://.import/basic_turret_base.png-b4cc482e1ecd31b1ed23d3a5156c01a8.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://textures/bullet.png"
-dest_files=[ "res://.import/bullet.png-fcc9b6edffdc3d7ef5fea596f59b4f40.stex" ]
+source_file="res://textures/basic_turret_base.png"
+dest_files=[ "res://.import/basic_turret_base.png-b4cc482e1ecd31b1ed23d3a5156c01a8.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=true
+flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

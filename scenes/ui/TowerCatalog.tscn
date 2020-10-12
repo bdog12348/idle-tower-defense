@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://textures/basic_turret_tm.png" type="Texture" id=1]
+[ext_resource path="res://scenes/ui/TowerButton.tscn" type="PackedScene" id=2]
+
+[node name="TowerCatalog" type="MarginContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_right = 20
+custom_constants/margin_top = 20
+custom_constants/margin_left = 20
+custom_constants/margin_bottom = 20
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="."]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 1260.0
+margin_bottom = 700.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 1260.0
+margin_bottom = 700.0
+custom_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+margin_right = 1240.0
+margin_bottom = 115.0
+size_flags_horizontal = 3
+custom_constants/separation = 10
+
+[node name="Upgrade" parent="VBoxContainer/HBoxContainer" instance=ExtResource( 2 )]
+margin_right = 90.0
+buttonImage = ExtResource( 1 )
+buttonName = "Basic Turret"

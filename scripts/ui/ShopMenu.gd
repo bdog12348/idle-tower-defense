@@ -7,12 +7,7 @@ onready var tab_container = $MarginContainer/TabContainer
 
 
 func _ready():
-	print(get_children())
-#	for frame in tab_container.get_children():
-	for child in $Control.get_child(0).get_children():
-		child.update_level(Data.Upgrades[child.keyInDict].current_amount)
-		child.update_price(Data.Upgrades[child.keyInDict].price)
-		child.connect("upgrade_bought", self, "button_pressed")
+	init_upgrades(self)
 
 
 func _unhandled_input(event):
@@ -24,13 +19,29 @@ func _unhandled_input(event):
 
 
 func button_pressed(key, button):
-#	if Data.gold >= Data.Upgrades[key].price:
-#		Data.gold -= Data.Upgrades[key].price
-	Data.buy_upgrade(Data.Upgrades[key].type)
-	button.update_level(Data.Upgrades[key].current_amount)
-	button.update_price(Data.Upgrades[key].price)
+	if Data.gold >= Data.Upgrades[key].price:
+		Data.gold -= Data.Upgrades[key].price
+		Data.buy_upgrade(Data.Upgrades[key].type)
+		button.update_level(Data.Upgrades[key].current_amount)
+		button.update_price(Data.Upgrades[key].price)
 
 
 func invis():
 	visible = false
 	get_tree().paused = false
+	
+	
+func init_upgrades(node):
+	for N in node.get_children():
+		if N.get_child_count() > 0:
+			if N.is_in_group("BasicTurretUpgrades"):
+				pass
+			if N.is_in_group("Upgrade"):
+				print("found upgrade")
+				N.update_level(Data.Upgrades[N.keyInDict].current_amount)
+				N.update_price(Data.Upgrades[N.keyInDict].price)
+				N.connect("upgrade_bought", self, "button_pressed")
+				
+			init_upgrades(N)
+		else:
+			pass

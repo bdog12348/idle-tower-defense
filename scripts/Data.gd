@@ -14,39 +14,41 @@ var num_towers := float(0)
 var basic_enemies_killed := float(0)
 
 enum EnemyTypes {ONE_ENEMY, FIVE_ENEMY, TEN_ENEMY, TWENTY_ENEMY}
-enum UpgradeTypes {AUTO_CLICKER, CLICK_POWER, DIGGING}
+
+enum UpgradeTypes { 
+		BASIC_TURRET_DAMAGE, BASIC_TURRET_RELOAD, 
+	}
+	
 enum TurretTypes {BASIC_TURRET}
 
 signal bought_upgrade (type)
 
-var Turrets = {
+var Towers = {
 	"basic_turret": {
+		"base_price" : float(5),
+		"multiplier" : float(1.07),
+		"price" : float(0),
+		"amount_in_inventory" : float(0),
+		"current_amount" : float(1),
 		"type": TurretTypes.BASIC_TURRET
 	}
 }
 
 var Upgrades = {
-	"auto_clicker": {
+	"basic_turret_damage": {
+		"base_price" : float(5),
+		"multiplier" : float(1.07),
+		"price" : float(0),
+		"current_amount" : float(0),
+		"type" : UpgradeTypes.BASIC_TURRET_DAMAGE
+	},
+	"basic_turret_reload": {
 		"base_price" : float(10),
 		"multiplier" : float(1.07),
 		"price" : float(0),
 		"current_amount" : float(0),
-		"type" : UpgradeTypes.AUTO_CLICKER
+		"type" : UpgradeTypes.BASIC_TURRET_RELOAD
 	},
-	"click_power": {
-		"base_price" : float(50),
-		"multiplier" : float(1.15),
-		"price" : float(0),
-		"current_amount" : float(0),
-		"type" : UpgradeTypes.CLICK_POWER
-	},
-	"digging_permit": {
-		"base_price" : float(250),
-		"multiplier" : float(1.15),
-		"price" : float(0),
-		"current_amount" : float(0),
-		"type" : UpgradeTypes.DIGGING
-	}
 }
 
 const EnemyMultipliers = {
@@ -122,6 +124,7 @@ func save_player_data():
 		"gold" : gold,
 		"click_damage" : click_damage,
 		"upgrades" : Upgrades,
+		"towers" : Towers,
 		"wave" : wave,
 	}
 
@@ -148,6 +151,7 @@ func load_player_data(data):
 	gold = data.gold
 	click_damage = data.click_damage
 	Upgrades = data.upgrades
+	Towers = data.towers
 	wave = data.wave
 
 

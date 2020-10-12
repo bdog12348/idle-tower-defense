@@ -20,7 +20,7 @@ var panelShowing = false
 var highlightSpawn
 var towerMenuSpawn
 
-onready var tilemap = $"../Map/TileMap"
+onready var tilemap = $"../Map/Navigation2D/TileMap"
 
 const offset_amt = 32
 
