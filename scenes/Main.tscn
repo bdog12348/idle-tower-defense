@@ -16,7 +16,7 @@
 
 [node name="bar" type="Sprite" parent="."]
 modulate = Color( 0.156863, 0.294118, 0.388235, 1 )
-position = Vector2( 282.323, 558.201 )
+position = Vector2( 263.323, 558.201 )
 rotation = 3.14159
 scale = Vector2( 80.5295, 80.5295 )
 z_index = -2

@@ -19,6 +19,7 @@ z_index = 1
 texture = ExtResource( 2 )
 script = ExtResource( 3 )
 max_shots_per_mag = 2
+reload_cooldown = 3.0
 
 [node name="turret_gun" type="Sprite" parent="."]
 texture = ExtResource( 1 )
@@ -39,7 +40,6 @@ margin_right = 200.371
 margin_bottom = 24.494
 rect_scale = Vector2( 0.159489, 0.159489 )
 max_value = 1.0
-step = 1.0
 value = 1.0
 texture_under = ExtResource( 5 )
 texture_over = ExtResource( 4 )

@@ -14,14 +14,13 @@ func _ready():
 
 
 func _process(delta):
-	if towers.size() > 0:
-		target = towers[0]
-	
+	if towers.size() > 0 and target == null:
+		get_target()
+
 	if target != null and path == null:
-		print("set a path from: ", position, " to: ", target.position)
 		path = nav2d.get_simple_path(position, target.position, true)
 
-	if path != null:
+	if path != null and target != null:
 		var move_distance = speed * delta
 		move_along_path(move_distance)
 
@@ -46,3 +45,22 @@ func _on_Area2D_area_entered(area):
 	if tower.is_in_group("Tower"):
 		tower.set_manned()
 		hide()
+
+
+func get_target():
+	var closestTower = towers[0]
+	var i = 0
+	while closestTower.worker != null and i < towers.size() - 1:
+		i += 1
+		closestTower = towers[i]
+
+	for tower in towers:
+		if tower.worker == null and closestTower != tower:
+			var distance = tower.position.distance_to(position)
+			var closestDistance = closestTower.position.distance_to(position)
+			if distance < closestDistance:
+				closestTower = tower
+
+	if closestTower.worker == null:
+		target = closestTower
+		target.worker = self

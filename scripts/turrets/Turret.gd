@@ -6,18 +6,18 @@ var target
 var manned = false
 var moving = false
 
+var worker
+
 var all_enemies = []
 
 var Bullet = preload("res://scenes/turrets/bullets/BasicBullet.tscn")
 
 onready var turret_gun = $turret_gun
-onready var timer = $ShotTimer
 
 var canShoot = true
 
-
 export (int) var max_shots_per_mag
-var current_num_shots = max_shots_per_mag
+var current_num_shots
 
 export (float) var bullet_fire_offset = 30
 export (float) var shot_cooldown = 2
@@ -26,33 +26,30 @@ onready var enemy_manager = get_tree().root.get_node("Node2D/EnemyManager")
 
 func _ready():
 	$ShotProgress.max_value = max_shots_per_mag
-	print(max_shots_per_mag)
-	
+	current_num_shots = max_shots_per_mag
+
 	if enemy_manager:
 		enemy_manager.connect("enemy_created", self, "add_enemy")
 		enemy_manager.connect("enemy_removed", self, "remove_enemy")
-		
+
 	$Tween.connect("tween_all_completed", self, "_on_Tween_completed")
-	
-	timer.connect("timeout", self, "_on_ShotTimer_timeout")
-	timer.wait_time = shot_cooldown
+
 	$ReloadTimer.wait_time = reload_cooldown
 	$ReloadTimer.connect("timeout", self, "_on_ReloadTimer_timeout")
-	
+
 	$Area2D.connect("input_event", self, "input_handler")
 
 
 func _process(_delta):
-	
 	set_target()
 	if target != null:
 		turret_gun.look_at(target.get_global_position())
-	
-	if manned:
+
+	if manned and all_enemies.size() > 0:
 		fire_bullet()
-	
+
 	$ShotProgress.value = current_num_shots
-	
+
 	if moving:
 		$Highlight.visible = true
 	else:
@@ -62,27 +59,24 @@ func _process(_delta):
 func fire_bullet():
 	if not canShoot:
 		return
-	
-	print(current_num_shots)
+
 	if current_num_shots <= 0:
 		reload(reload_cooldown)
 		$ReloadTimer.start()
-	else:
-	
-		var dir_rot = -turret_gun.rotation + PI/2
-		var direction = Vector2(sin(dir_rot), cos(dir_rot))
-		var spawn_point = global_position + direction * bullet_fire_offset
+		return
 
-		var bullet = Bullet.instance()
-		bullet.velocity = bullet.velocity.rotated(turret_gun.rotation)
-		bullet.position = spawn_point
-		get_tree().root.add_child(bullet)
-		current_num_shots -= 1
-		
-		canShoot = false
+	var dir_rot = -turret_gun.rotation + PI/2
+	var direction = Vector2(sin(dir_rot), cos(dir_rot))
+	var spawn_point = global_position + direction * bullet_fire_offset
+
+	var bullet = Bullet.instance()
+	bullet.velocity = bullet.velocity.rotated(turret_gun.rotation)
+	bullet.position = spawn_point
+	get_tree().root.add_child(bullet)
+	current_num_shots -= 1
+	if current_num_shots > 0:
 		reload(shot_cooldown)
-		timer.start()
-	
+
 
 func set_target():
 	if all_enemies.size() > 0:
@@ -91,7 +85,7 @@ func set_target():
 			var closest_enemy_distance = position.distance_squared_to(closest_enemy.position)
 			if position.distance_squared_to(enemy.position) < closest_enemy_distance:
 				closest_enemy = enemy
-			
+
 		target = closest_enemy
 
 
@@ -111,11 +105,13 @@ func set_manned():
 
 func set_unmanned():
 	manned = false
+	worker = null
 	$wIndicator.hide()
 	$ShotProgress.rect_position.y += 10
 
 
 func reload(time):
+	canShoot = false
 	$ShotProgress/ReloadProgress.show()
 	$Tween.interpolate_property($ShotProgress/ReloadProgress, "value", 1, 0, time)
 	$Tween.start()
@@ -128,12 +124,8 @@ func input_handler(viewport, event, shape_idx):
 
 func _on_Tween_completed():
 	$ShotProgress/ReloadProgress.hide()
-	$Tween.clear()
+	canShoot = true
+	$Tween.reset_all()
 
 func _on_ReloadTimer_timeout():
-	print('timout')
 	current_num_shots = max_shots_per_mag
-
-
-func _on_ShotTimer_timeout():
-	canShoot = true
