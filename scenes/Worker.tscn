@@ -7,7 +7,6 @@
 extents = Vector2( 8.1419, 8.2271 )
 
 [node name="Worker" type="Sprite"]
-z_index = 1
 texture = ExtResource( 1 )
 script = ExtResource( 2 )
 

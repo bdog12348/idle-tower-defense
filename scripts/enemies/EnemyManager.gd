@@ -3,47 +3,55 @@ extends Node2D
 onready var path = $"../Map/Navigation2D/TileMap/Path2D"
 
 export (PackedScene) var particleToSpawn
+export (Array, PackedScene) var enemy_array
 
 var enemies = []
 var enemiesSpawned = 0
 var totalNumEnemiesToSpawn
 var enemies_to_spawn
 
-var currentWaveNum
+var wave_over = false
 
-var spawnedParticle
+var currentWaveNum
 
 const ENEMY_DIVISORS = [1, 5, 10, 20]
 
-export (Array, PackedScene) var enemy_array
 
 signal enemy_created(enemy)
 signal enemy_removed(enemy)
+signal clear_all()
+
 
 func _ready():
 	$WaveTimer.start()
 
-func _process(_delta):
-	if enemies.size() == 0 and enemiesSpawned == totalNumEnemiesToSpawn and $WaveTimer.is_stopped() == true and currentWaveNum == 0:
-		Data.wave += float(1)
-		$WaveTimer.start()
 
-#	if Input.is_action_just_pressed("click"):
-#		var mouse_pos = get_viewport().get_mouse_position()
-#
-#		if spawnedParticle == null:
-#			var spawnedParticle = particleToSpawn.instance()
-#			get_tree().root.add_child(spawnedParticle)
-#			spawnedParticle.emitting = true
-#			spawnedParticle.position = mouse_pos
-#		else:
-#			spawnedParticle._on_Timer_timeout()
-#			var spawnedParticle = particleToSpawn.instance()
-#			get_tree().root.add_child(spawnedParticle)
-#			spawnedParticle.emitting = true
-#			spawnedParticle.position = mouse_pos
-#
-#		attack_enemy(mouse_pos)
+func _process(_delta):
+	if enemies.size() == 0 and $WaveTimer.is_stopped() == true and currentWaveNum == 0: #and enemiesSpawned == totalNumEnemiesToSpawn
+		wave_over = true
+
+	if Data.health <= 0:
+		wave_over = true
+
+	if wave_over:
+		handle_wave_over()
+
+
+func handle_wave_over():
+	if enemies.size() > 0 or currentWaveNum > 0 or Data.health <= 0:
+		if Data.wave == Data.max_wave:
+			Data.wave -= 1
+		
+		Data.health = Data.max_health
+		wave_over = false
+		reset_wave()
+		$WaveTimer.start()
+		
+		return
+	if Data.wave == Data.max_wave:
+		Data.wave += float(1)
+	$WaveTimer.start()
+	wave_over = false
 
 
 func attack_enemy(mouse_pos):
@@ -85,42 +93,6 @@ func get_enemy(target_num):
 			return returnEnemy
 
 
-func _on_WaveTimer_timeout():
-	enemies_to_spawn = {}
-	make_into_wave(Data.wave)
-	
-	if enemiesSpawned < totalNumEnemiesToSpawn:
-		$EnemySpawnTimer.start()
-	$WaveTimer.stop()
-
-
-func spawn_enemy():
-	var spawned = get_enemy(enemiesSpawned + 1)
-	var spawnedEnemy = spawned.get_children()[0]
-	spawnedEnemy.connect("died", self, "enemy_died")
-	path.add_child(spawned)
-	enemies.append(spawnedEnemy)
-	emit_signal("enemy_created", spawned)
-	enemiesSpawned += 1
-	
-	if enemiesSpawned >= totalNumEnemiesToSpawn:
-		$EnemySpawnTimer.stop()
-		var nextWaveNum = currentWaveNum - totalNumEnemiesToSpawn
-		if nextWaveNum > 0:
-			make_into_wave(nextWaveNum)
-			if enemiesSpawned < totalNumEnemiesToSpawn:
-				$EnemySpawnTimer.start()
-		else:
-			currentWaveNum = 0
-
-
-func _on_Area2D_body_entered(body):
-	var enemy = body.get_parent()
-	enemies.erase(enemy)
-	emit_signal("enemy_removed", enemy.get_parent())
-	enemy.reached_end()
-
-
 func make_enemy(type, offset = null, amount = 1):
 	for i in range(amount):
 		var spawn = enemy_array[type].instance()
@@ -139,3 +111,56 @@ func enemy_died(enemy):
 	emit_signal("enemy_removed", enemy.get_parent())
 	enemy.destroy()
 	enemies.remove(enemy_pos)
+
+
+func enemy_reached_end(enemy):
+	enemies.erase(enemy)
+	emit_signal("enemy_removed", enemy.get_parent())
+
+
+func spawn_enemy():
+	var spawned = get_enemy(enemiesSpawned + 1)
+	var spawnedEnemy = spawned.get_children()[0]
+	spawnedEnemy.connect("died", self, "enemy_died")
+	spawnedEnemy.connect("hit_end", self, "enemy_reached_end")
+	path.add_child(spawned)
+	enemies.append(spawnedEnemy)
+	emit_signal("enemy_created", spawned)
+	enemiesSpawned += 1
+	
+	if enemiesSpawned >= totalNumEnemiesToSpawn:
+		$EnemySpawnTimer.stop()
+		var nextWaveNum = currentWaveNum - totalNumEnemiesToSpawn
+		if nextWaveNum > 0:
+			make_into_wave(nextWaveNum)
+			if enemiesSpawned < totalNumEnemiesToSpawn:
+				$EnemySpawnTimer.start()
+		else:
+			currentWaveNum = 0
+
+
+func _on_WaveTimer_timeout():
+	enemies_to_spawn = {}
+	make_into_wave(Data.wave)
+	
+	if enemiesSpawned < totalNumEnemiesToSpawn:
+		$EnemySpawnTimer.start()
+	$WaveTimer.stop()
+
+
+func reset_wave():
+	for enemy in enemies:
+		for child in enemy.get_children():
+			child.queue_free()
+		enemy.queue_free()
+	enemies.clear()
+	emit_signal("clear_all")
+	$EnemySpawnTimer.stop()
+
+
+func next_wave_button_pressed():
+	if Data.wave < Data.max_wave:
+		reset_wave()
+		wave_over = false
+		Data.wave += 1
+		$WaveTimer.start()

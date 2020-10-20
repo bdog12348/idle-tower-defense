@@ -13,33 +13,39 @@ export (Color) var colorTint
 onready var bar = $TextureProgress
 
 signal died (enemy)
+signal hit_end ()
 
 func _ready():
 	bar.max_value = health
 	bar.value = health
 	modulate = colorTint
+	$Area2D.connect("area_entered", self, "reached_end")
 	
 	
 func _physics_process(delta):
 	movement_loop(delta);
-	
-	
+
+
 func movement_loop(delta):
 	path_follow.set_offset(path_follow.get_offset() + speed * delta)
 
 
-func reached_end():
+func reached_end(other):
+	if not other.is_in_group("EndZone"):
+		return
+		
 	print("you took " + str(damage) + " damage")
+	Data.take_damage(damage)
+	
+	emit_signal("hit_end", self)
 	
 	get_parent().queue_free()
-	
 	for child in get_children():
 		child.queue_free()
-
 	queue_free()
 	
 
-func take_damage(amount):
+func take_damage(amount):	
 	health -= amount
 	
 	if health <= 0:

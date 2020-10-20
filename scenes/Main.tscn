@@ -29,25 +29,27 @@ scale = Vector2( 0.851159, 0.851159 )
 [node name="ShopMenu" parent="." instance=ExtResource( 11 )]
 visible = false
 anchor_bottom = 0.0
-margin_left = 38.0547
-margin_top = 34.487
-margin_right = 1318.05
-margin_bottom = 754.487
-rect_scale = Vector2( 0.92257, 0.92257 )
+margin_left = 39.2001
+margin_top = 35.7124
+margin_right = 1319.2
+margin_bottom = 755.712
+rect_scale = Vector2( 0.937, 0.905 )
 
 [node name="GUI" parent="." instance=ExtResource( 7 )]
 pause_mode = 2
-margin_right = 1080.0
-margin_bottom = 79.0
+margin_right = 1280.0
+margin_bottom = 90.0
 invalidColor = Color( 0.8, 0.0745098, 0.0745098, 1 )
 validColor = Color( 0.223529, 0.662745, 0.0823529, 1 )
 
-[node name="TextureButton" parent="GUI/ShopContainer/ShopButton" index="0"]
-margin_left = -11.8375
-margin_top = -13.1173
-margin_right = 52.1625
-margin_bottom = 50.8827
-rect_scale = Vector2( 1.18033, 1.18033 )
+[node name="StatsContainer" parent="GUI" index="0"]
+margin_bottom = 70.0
+
+[node name="Control" parent="GUI/StatsContainer" index="1"]
+margin_bottom = 50.0
+
+[node name="Control" parent="GUI" index="2"]
+margin_bottom = 70.0
 
 [node name="EnemyManager" type="Node2D" parent="."]
 script = ExtResource( 2 )
@@ -64,5 +66,7 @@ wait_time = 1.5
 position = Vector2( -1, 0 )
 [connection signal="timeout" from="EnemyManager/WaveTimer" to="EnemyManager" method="_on_WaveTimer_timeout"]
 [connection signal="timeout" from="EnemyManager/EnemySpawnTimer" to="EnemyManager" method="spawn_enemy"]
+
+[editable path="Map"]
 
 [editable path="GUI"]

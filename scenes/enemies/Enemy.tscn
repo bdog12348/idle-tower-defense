@@ -19,14 +19,14 @@ speed = 200.0
 goldValue = 1.0
 damage = 1.0
 
-[node name="KinematicBody2D" type="KinematicBody2D" parent="." groups=[
+[node name="Area2D" type="Area2D" parent="." groups=[
 "Enemy",
 ]]
 __meta__ = {
 "_edit_group_": true
 }
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="KinematicBody2D" groups=[
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" groups=[
 "Enemy",
 ]]
 shape = SubResource( 1 )

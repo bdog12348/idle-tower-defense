@@ -15,17 +15,20 @@ extents = Vector2( 7.10284, 7.14153 )
 [node name="Turret" type="Sprite" groups=[
 "Tower",
 ]]
-z_index = 1
 texture = ExtResource( 2 )
 script = ExtResource( 3 )
-max_shots_per_mag = 2
-reload_cooldown = 3.0
+max_shots_per_mag = 4
+shot_cooldown = 1.5
+reload_cooldown = 2.0
 
 [node name="turret_gun" type="Sprite" parent="."]
 texture = ExtResource( 1 )
 
 [node name="ShotTimer" type="Timer" parent="."]
 wait_time = 3.0
+one_shot = true
+
+[node name="ReloadTimer" type="Timer" parent="."]
 one_shot = true
 
 [node name="Area2D" type="Area2D" parent="."]
@@ -66,6 +69,7 @@ __meta__ = {
 
 [node name="Highlight" parent="." instance=ExtResource( 7 )]
 visible = false
+scale = Vector2( 0.24296, 0.24296 )
 
 [node name="Tween" type="Tween" parent="."]
 
@@ -74,6 +78,3 @@ visible = false
 position = Vector2( 0.0294952, -12.3453 )
 scale = Vector2( 0.501076, 0.501076 )
 texture = ExtResource( 8 )
-
-[node name="ReloadTimer" type="Timer" parent="."]
-one_shot = true

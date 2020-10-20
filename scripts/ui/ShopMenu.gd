@@ -5,9 +5,12 @@ onready var click_power = $MarginContainer/TabContainer/ScrollContainer/Upgrades
 
 onready var tab_container = $MarginContainer/TabContainer
 
+var worker_scene = preload("res://scenes/Worker.tscn")
 
 func _ready():
 	init_upgrades(self)
+	Data.connect("worker_bought", self, "worker_bought")
+	#$HBoxContainer/TowerCatalog.update_columns()
 
 
 func _unhandled_input(event):
@@ -45,3 +48,10 @@ func init_upgrades(node):
 			init_upgrades(N)
 		else:
 			pass
+
+
+func worker_bought():
+	var map = get_parent().get_node("Map")
+	var worker = worker_scene.instance()
+	worker.position = Vector2(400, 400)
+	map.add_child(worker)

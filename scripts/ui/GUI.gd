@@ -5,9 +5,10 @@ var highlight = preload("res://scenes/ui/Highlight.tscn")
 var towerMenu = preload("res://scenes/TowerMenu.tscn")
 
 onready var ShopMenu = get_node("../ShopMenu")
-onready var goldLabel = $"StatsContainer/Gold Label"
-onready var waveLabel = $"StatsContainer/Wave Label"
-onready var statsPanel = $"StatsContainer/StatsPanelContainer/StatsPanel"
+onready var goldLabel = $"StatsContainer/Control/Gold Label"
+onready var waveLabel = $"StatsContainer/Control/Wave Label"
+onready var healthLabel = $"StatsContainer/Control/HP Label"
+onready var statsPanel = $"StatsContainer/Control/StatsPanel"
 
 export (Color) var invalidColor
 export (Color) var validColor
@@ -33,6 +34,13 @@ func _process(_delta):
 	else:
 		goldLabel.text = "Gold: " + str(stepify(Data.gold, 0.01))
 	waveLabel.text = "Wave: " + str(Data.wave)
+	healthLabel.text = "HP: " + str(Data.health)
+	
+	if (Data.wave < Data.max_wave):
+		$Control/WaveButtonContainer/NextWaveButton.show()
+	else:
+		if $Control/WaveButtonContainer/NextWaveButton.visible:
+			$Control/WaveButtonContainer/NextWaveButton.hide()
 	
 	if Input.is_action_just_pressed("ui_cancel"):
 		if ShopMenu.visible:
@@ -61,6 +69,7 @@ func _process(_delta):
 
 func _on_TextureButton_pressed():
 	ShopMenu.visible = !ShopMenu.visible
+	get_node("StatsContainer/Control").visible = !get_node("StatsContainer/Control").visible
 	get_tree().paused = !get_tree().paused
 
 
@@ -106,10 +115,14 @@ func scientific_notation(number : float) -> String:
 func _on_Button_pressed():
 	print(panelShowing)
 	if not panelShowing:
-		$Tween.interpolate_property(statsPanel, "rect_position:y", -425, 50, .5, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
+		$Tween.interpolate_property(statsPanel, "rect_position:y", -410, 77, .5, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
 		$Tween.start()
 		panelShowing = true
 	else:
-		$Tween.interpolate_property(statsPanel, "rect_position:y", 50, -425, .5, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
+		$Tween.interpolate_property(statsPanel, "rect_position:y", 77, -410, .5, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
 		$Tween.start()
 		panelShowing = false
+
+
+func _on_NextWaveButton_pressed():
+	get_parent().get_node("EnemyManager").next_wave_button_pressed()

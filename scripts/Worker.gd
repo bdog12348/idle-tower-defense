@@ -1,7 +1,7 @@
 extends Sprite
 
-onready var tilemap = get_parent()#.get_node("Navigation2D/TileMap")
-onready var nav2d = get_parent().get_parent()
+onready var tilemap = get_parent().get_node("Navigation2D/TileMap")
+onready var nav2d = get_parent().get_node("Navigation2D")
 
 var towers
 var target
@@ -27,7 +27,7 @@ func _process(delta):
 
 func move_along_path(distance):
 	var start_point = position
-	for i in range(path.size()):
+	for _i in range(path.size()):
 		var distance_to_next = start_point.distance_to(path[0])
 		if distance <= distance_to_next and distance >= 0.0:
 			position = start_point.linear_interpolate(path[0], distance / distance_to_next)

@@ -6,10 +6,18 @@ const save_pass = "135792468ab"
 var player_save_path = SAVE_DIR + "player_save.dat"
 var enemy_save_path = SAVE_DIR + "enemy_save.dat"
 
-var gold := float(0)
+var gold := float(75)
 var click_damage := float(1)
 var wave := float(1)
+var max_wave := float(0)
 var num_towers := float(0)
+var health := float(5)
+var max_health := float(5)
+
+var workers_owned := float(0)
+var worker_base_price := float(75)
+var worker_current_price := float(75)
+var worker_exp := float(1.1)
 
 var basic_enemies_killed := float(0)
 
@@ -22,12 +30,13 @@ enum UpgradeTypes {
 enum TurretTypes {BASIC_TURRET}
 
 signal bought_upgrade (type)
+signal worker_bought ()
 
 var Towers = {
 	"basic_turret": {
 		"base_price" : float(5),
 		"multiplier" : float(1.07),
-		"price" : float(0),
+		"price" : float(5),
 		"amount_in_inventory" : float(0),
 		"current_amount" : float(1),
 		"type": TurretTypes.BASIC_TURRET
@@ -58,6 +67,11 @@ const EnemyMultipliers = {
 
 func _ready():
 	load_data()
+
+
+func _process(delta):
+	if wave > max_wave:
+		max_wave = wave
 
 
 func addEnemiesKilled(enemyType, amount):
@@ -113,6 +127,18 @@ func buy_upgrade(type):
 			update_upgrade_prices()
 
 
+func buy_tower(key_in_dict):
+	gold -= Towers[key_in_dict].price
+	Towers[key_in_dict].current_amount += float(1)
+	Towers[key_in_dict].price = Towers[key_in_dict].base_price * pow(Towers[key_in_dict].multiplier, Towers[key_in_dict].current_amount)
+
+
+func buy_worker():
+	gold -= worker_current_price
+	workers_owned += 1
+	worker_current_price = worker_base_price * pow(worker_exp, workers_owned)
+	emit_signal("worker_bought")
+
 func update_upgrade_prices():
 	for key in Upgrades.keys():
 		var upgrade = Upgrades[key]
@@ -126,6 +152,8 @@ func save_player_data():
 		"upgrades" : Upgrades,
 		"towers" : Towers,
 		"wave" : wave,
+		"health" : health,
+		"max_health" : max_health,
 	}
 
 	var file = File.new()
@@ -153,7 +181,12 @@ func load_player_data(data):
 	Upgrades = data.upgrades
 	Towers = data.towers
 	wave = data.wave
-
+	health = data.health
+	max_health = data.max_health
 
 func load_enemy_data(data):
 	basic_enemies_killed = data.basic_enemies_killed
+
+
+func take_damage(amt):
+	health -= amt

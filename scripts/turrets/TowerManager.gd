@@ -19,7 +19,10 @@ func dig_tower(tower_pos):
 	pass
 
 
-func _process(delta):
+func _process(_delta):
+	if Input.is_action_just_pressed("build"):
+		pass
+	
 	if move_target != null:
 		move_tower()
 

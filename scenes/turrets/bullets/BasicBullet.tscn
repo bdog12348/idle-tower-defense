@@ -10,7 +10,7 @@ radius = 9.16648
 position = Vector2( 0, 0.420456 )
 texture = ExtResource( 1 )
 script = ExtResource( 2 )
-velocity = Vector2( 300, 0 )
+velocity = Vector2( 350, 0 )
 damage = 1.0
 
 [node name="Area2D" type="Area2D" parent="."]
@@ -19,4 +19,3 @@ damage = 1.0
 shape = SubResource( 1 )
 
 [node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."]
-[connection signal="screen_exited" from="VisibilityNotifier2D" to="." method="kill"]

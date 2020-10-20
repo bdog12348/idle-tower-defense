@@ -1,6 +1,6 @@
 extends Node2D
 
-onready var area2d = $"../Map/TileMap/Area2D"
+onready var area2d = get_parent().get_node("Map/Navigation2D/TileMap/EndZone")
 
 var auto_clicker_base_time = 2
 

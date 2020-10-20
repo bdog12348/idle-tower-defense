@@ -1,8 +1,6 @@
 extends Button
 
 export (Texture) var buttonImage
-export (String) var buttonName
-export (String) var keyInDict
 export (String, MULTILINE) var tooltip
 
 var current_num_owned = 0
@@ -19,20 +17,20 @@ func _init():
 
 
 func _ready():
-	_name.text = buttonName
+	_name.text = "Worker"
 	image.texture = buttonImage
 	update_owned_price()
 
 
 func _on_Upgrade_pressed():
 	if Data.gold >= current_price:
-		Data.buy_tower(keyInDict)
+		Data.buy_worker()
 		update_owned_price()
 
 
 func update_owned_price():
-	var num = Data.Towers[keyInDict].current_amount
-	var price = Data.Towers[keyInDict].price
+	var num = Data.workers_owned
+	var price = Data.worker_current_price
 	current_num_owned = num
 	$Owned.text = "Owned: " + str(num)
 	current_price = price

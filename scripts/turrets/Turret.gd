@@ -15,6 +15,7 @@ var Bullet = preload("res://scenes/turrets/bullets/BasicBullet.tscn")
 onready var turret_gun = $turret_gun
 
 var canShoot = true
+var reloading = false
 
 export (int) var max_shots_per_mag
 var current_num_shots
@@ -22,15 +23,21 @@ var current_num_shots
 export (float) var bullet_fire_offset = 30
 export (float) var shot_cooldown = 2
 export (float) var reload_cooldown = 4
+
 onready var enemy_manager = get_tree().root.get_node("Node2D/EnemyManager")
 
 func _ready():
 	$ShotProgress.max_value = max_shots_per_mag
 	current_num_shots = max_shots_per_mag
+	
+	connect_children()
 
+
+func connect_children():
 	if enemy_manager:
 		enemy_manager.connect("enemy_created", self, "add_enemy")
 		enemy_manager.connect("enemy_removed", self, "remove_enemy")
+		enemy_manager.connect("clear_all", self, "clear_enemies")
 
 	$Tween.connect("tween_all_completed", self, "_on_Tween_completed")
 
@@ -50,20 +57,31 @@ func _process(_delta):
 
 	$ShotProgress.value = current_num_shots
 
+	if Input.is_action_just_pressed("m"):
+		moving = !moving
+
 	if moving:
 		$Highlight.visible = true
+		var mouse_pos = get_viewport().get_mouse_position()
+		var tile_pos = get_parent().get_parent().map_to_world(get_parent().get_parent().world_to_map(mouse_pos))
+		position = Vector2(tile_pos.x + 16, tile_pos.y + 16)
 	else:
 		$Highlight.visible = false
 
 
 func fire_bullet():
 	if not canShoot:
-		return
-
-	if current_num_shots <= 0:
-		reload(reload_cooldown)
-		$ReloadTimer.start()
-		return
+		if not reloading:
+			if current_num_shots <= 0:
+				reload(reload_cooldown)
+				$ReloadTimer.start()
+				return
+			else:
+				
+				reload(shot_cooldown)
+				return
+		else:
+			return
 
 	var dir_rot = -turret_gun.rotation + PI/2
 	var direction = Vector2(sin(dir_rot), cos(dir_rot))
@@ -74,8 +92,7 @@ func fire_bullet():
 	bullet.position = spawn_point
 	get_tree().root.add_child(bullet)
 	current_num_shots -= 1
-	if current_num_shots > 0:
-		reload(shot_cooldown)
+	canShoot = false
 
 
 func set_target():
@@ -97,6 +114,10 @@ func remove_enemy(enemy):
 	all_enemies.erase(enemy)
 
 
+func clear_enemies():
+	all_enemies.clear()
+
+
 func set_manned():
 	manned = true
 	$wIndicator.show()
@@ -111,13 +132,16 @@ func set_unmanned():
 
 
 func reload(time):
-	canShoot = false
+	if $Tween.is_active():
+		return
+		
+	reloading = true
 	$ShotProgress/ReloadProgress.show()
 	$Tween.interpolate_property($ShotProgress/ReloadProgress, "value", 1, 0, time)
 	$Tween.start()
 
 
-func input_handler(viewport, event, shape_idx):
+func input_handler(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT and not moving:
 		fire_bullet()
 
@@ -125,7 +149,11 @@ func input_handler(viewport, event, shape_idx):
 func _on_Tween_completed():
 	$ShotProgress/ReloadProgress.hide()
 	canShoot = true
+	reloading = false
 	$Tween.reset_all()
+
 
 func _on_ReloadTimer_timeout():
 	current_num_shots = max_shots_per_mag
+	print("reset num shots")
+
